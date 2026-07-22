@@ -180,6 +180,11 @@ header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
     <div class="card-title">Inputs</div>
 
     <div class="field">
+      <label>Variety name</label>
+      <input type="text" id="varietyName" placeholder="e.g. Tulip Red Emperor">
+    </div>
+
+    <div class="field">
       <label>Euro rate (₹ per €1)</label>
       <input type="number" id="euroRate" inputmode="decimal" placeholder="e.g. 110" step="any">
     </div>
@@ -193,7 +198,7 @@ header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
     </div>
 
     <div class="field">
-      <label>Container size</label>
+      <label>Bulb size</label>
       <select id="containerSize">
         <option value="">Select size</option>
         <option value="420000">12\14 — 4,20,000 bulbs</option>
@@ -254,7 +259,7 @@ header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
   // -------------------------------------------------------
   // PASTE YOUR APPS SCRIPT /exec URL BELOW (keep the quotes)
   // -------------------------------------------------------
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvFALal7GgyNWxJXIwFcf8lgd7XamZcAzdBqrPtpir9Uk5s94UmGOVc_vLn-xofYfR/exec';
+  const SCRIPT_URL = 'PASTE_YOUR_EXEC_URL_HERE';
   // -------------------------------------------------------
 
   const fmt  = n => '₹' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 5 });
@@ -302,6 +307,7 @@ header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
   }
 
   document.getElementById('submitBtn').addEventListener('click', async () => {
+    const vn  = document.getElementById('varietyName').value.trim();
     const er  = document.getElementById('euroRate').value;
     const bp  = document.getElementById('bulbPrice').value;
     const sel = document.getElementById('containerSize');
@@ -309,7 +315,7 @@ header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
     const op  = document.getElementById('opCost').value;
     const fin = document.getElementById('r-final').textContent;
 
-    if (!er || !bp || !sel.value || !cc) {
+    if (!vn || !er || !bp || !sel.value || !cc) {
       showToast('Fill in all fields first.', false); return;
     }
     if (fin === '—') {
@@ -323,6 +329,7 @@ header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
     try {
       const url = new URL(SCRIPT_URL);
       url.searchParams.set('timestamp',     new Date().toLocaleString('en-IN'));
+      url.searchParams.set('varietyName',   vn);
       url.searchParams.set('euroRate',      er);
       url.searchParams.set('bulbPrice',     bp);
       url.searchParams.set('containerSize', sel.options[sel.selectedIndex].text);
@@ -341,7 +348,7 @@ header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    ['euroRate','bulbPrice','containerCost','opCost']
+    ['varietyName','euroRate','bulbPrice','containerCost','opCost']
       .forEach(id => document.getElementById(id).value = '');
     document.getElementById('containerSize').selectedIndex = 0;
     ['r-euro','r-fob','r-import','r-op','r-final']
